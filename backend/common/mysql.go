@@ -7,12 +7,17 @@ import (
 
 //  连接Mysql数据
 func NewMysqlConn() (*sql.DB,error) {
-	db,err:=sql.Open("mysql","homestead:secret@tcp(127.0.0.1:3306)/yunpan?charset=utf8")
+	db,err:=sql.Open("mysql","root:123456@tcp(127.0.0.1:3306)/root?charset=utf8")
+	if err != nil {
+		return nil,err
+	}
+	db.SetMaxOpenConns(1000)
+	err =db.Ping()
 	return db,err
 }
 
 // 从结果集中获取一条数据
-func GetResultRow(rows sql.Rows) map[string]string {
+func GetResultRow(rows *sql.Rows) map[string]string {
 	// 返回所有的列
 	columns , _ := rows.Columns()
 	// 一行所有列的值
@@ -28,9 +33,7 @@ func GetResultRow(rows sql.Rows) map[string]string {
 		// 将数据写入到scans中
 		rows.Scan(scans...)
 		for i ,v := range vals {
-			if v != nil {
-				result[columns[i]] = string (v)
-			}
+			result[columns[i]] = string (v)
 		}
 	}
 
@@ -38,7 +41,7 @@ func GetResultRow(rows sql.Rows) map[string]string {
 }
 
 // 从结果集中获取多条数据
-func GetResultRows(rows sql.Rows) map[int]map[string]string {
+func GetResultRows(rows *sql.Rows) map[int]map[string]string {
 	columns , _ := rows.Columns()
 	vals :=make([][]byte,len(columns))
 	scans:=make([]interface{},len(columns))

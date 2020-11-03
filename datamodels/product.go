@@ -7,4 +7,5 @@ type Product struct {
 	Num int64 `json:"num" sql:"num" form:"num"`
 	Image string `json:"image" sql:"image" form:"image"`
 	Url  string `json:"url" sql:"url" form:"url"`
+	Bo  bool `sql:"bo"`
 }
